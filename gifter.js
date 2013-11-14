@@ -1,6 +1,97 @@
-;(function () {
+	var Gifter = function ( gifterCollection ) {
+		this.gifterCollection = gifterCollection;
+		this.IdxMap = this.createGifterIdxMap();
+		this.bindPossibleGifteeIdxs();
+		this.startGifter();
+//		console.log(JSON.stringify(this.gifterCollection));
+		
+	};
 
-	var listArray = [
+	Gifter.prototype.createGifterIdxMap = function () {
+		var ret = {};
+		this.gifterCollection.forEach(function(el, i, arr){
+			var name = Object.keys(el)[0];
+			if ( !ret.hasOwnProperty(name) ) {
+				ret[name] = i;
+			}					
+		});
+		return ret;
+	 
+	};
+
+	Gifter.prototype.bindPossibleGifteeIdxs = function () {
+		var that = this;
+		this.gifterCollection.forEach(function(el, i){
+			var Name = Object.keys(el)[0],
+				possibilities = [],
+				i,
+				innerObject;
+			innerObject = el[Name];
+			for (i in that.IdxMap) {
+				if ( innerObject.exception.indexOf(i) < 0 && !(i === Name) ) {
+					possibilities.push(i);
+				}
+			}
+			innerObject.possibilities = possibilities;
+		});
+	};
+
+	Gifter.prototype.startGifter = function () {
+		var i = 0,
+			l = this.gifterCollection.length,
+			usedArr = [],
+			randomGifter,
+			randomNumIdx;
+		for ( ; i < l; i++ ) {
+			randomNumIdx = this.getRandomUniqNum(0, l-1, usedArr);
+			randomGifter = this.gifterCollection[randomNumIdx];
+			usedArr.push(randomNumIdx);
+			this.assignGiftee(randomGifter);
+		}
+	};
+
+	Gifter.prototype.getRandomInt = function (min, max) {
+         return Math.floor(Math.random() * (max - min + 1) + min);
+	};
+
+	Gifter.prototype.getRandomUniqNum = function (min, max, usedArr) {
+		var randomNum = this.getRandomInt(min, max);
+		return usedArr.indexOf(randomNum) < 0 ? randomNum : this.getRandomUniqNum(min, max, usedArr);		
+	};
+
+	Gifter.prototype.assignGiftee = function (GifterObj) {
+		var randomGiftee;
+			GifterObj = GifterObj[Object.keys(GifterObj)[0]];
+			randomGiftee = this.getRandomUniqGiftee(GifterObj.possibilities);
+	};
+
+	Gifter.prototype.getRandomUniqGiftee = function (posArr) {
+		var l = posArr.length,
+			randomGifteeIdx,
+			randomGiftee;
+
+		if (l < 1) {
+			return false;
+		}
+
+		randomGifteeIdx = posArr[this.getRandomInt(0, l-1)];
+		randomGiftee = this.gifterCollection[this.IdxMap[randomGifteeIdx]];
+		
+		if (this.isGiftee(randomGiftee)) {
+					
+		}
+ 			
+	};
+
+	Gifter.prototype.tagGiftee = function () {
+			
+	};
+
+	Gifter.prototype.isGiftee = function (GifteeObj) {
+		return GifteeObj.hasOwnProperty("isGiftee");				
+	};
+
+	var gifter = new Gifter([
 		{ 
 			"Meg" : {
 				"email" : "Meg@email.com",
@@ -55,57 +146,9 @@
 				"exception" : "Mike"
 			}
 		}
-	],
-		
-		pickedObj = {},
-		i,
-		l,
-		randomNum,
-		usedIndexes = [],
-		failures,
-		choice;
-
-	function getRandomInt(min, max) {
-  		return Math.floor(Math.random() * (max - min + 1) + min);
-	}
-
-	function getUniqueRandomInt(i, min, max) {
-		var randomInt = getRandomInt(min, max);
-		return randomInt !== i ? randomInt : getUniqueRandomInt(i, min, max);
-	}
-
-	function getAvailPerson() {
-		
-	}
-
-	function getEveryoneButMe(eye, list) {
-		var i = 0,
-	        l = list.length,
-			ret = [];
-		for( ; i < l; i++ ){
-			if( eye === i ){
-				continue;			
-			}
-				ret.push(list[i]);
-		}
-		return ret;
-	}
-    
-    i = 0;
-    l = listArray.length;
-	for( ; i < l; i++ ){
-		failures = [];
-		randomNum = getUniqueRandomInt(i, 0, l);
-		choice = listArray[randomNum];
-
-		console.log(getEveryoneButMe(i, listArray));
-
-//		console.log(choice);
-//		console.log(listArray[i]);
-//		console.log(randomNum);
-//		console.log(i === randomNum);
-		   
-	}
+	]);
 	
+		
 
-}());
+
+
