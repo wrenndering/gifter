@@ -62,13 +62,17 @@
 	Gifter.prototype.assignGiftee = function (GifterObj) {
 		var randomGiftee;
 			GifterObj = GifterObj[Object.keys(GifterObj)[0]];
+			//console.log(GifterObj);
 			randomGiftee = this.getRandomUniqGiftee(GifterObj.possibilities);
+			GifterObj["giftee"] = Object.keys(randomGiftee)[0];
+			console.log(GifterObj);
 	};
 
 	Gifter.prototype.getRandomUniqGiftee = function (posArr) {
 		var l = posArr.length,
 			randomGifteeIdx,
-			randomGiftee;
+			randomGiftee,
+			posArrCopy = posArr;
 
 		if (l < 1) {
 			return false;
@@ -76,10 +80,12 @@
 
 		randomGifteeIdx = posArr[this.getRandomInt(0, l-1)];
 		randomGiftee = this.gifterCollection[this.IdxMap[randomGifteeIdx]];
-		
+		//console.log(randomGiftee);
 		if (this.isGiftee(randomGiftee)) {
-					
+			this.getRandomUniqGiftee(posArrCopy.splice(randomGifteeIdx, 1));
+			console.log("im a giftee");			
 		}
+		return randomGiftee;		
  			
 	};
 
@@ -87,8 +93,14 @@
 			
 	};
 
+	Gifter.prototype.tagGifter = function () {
+			
+	};
+
 	Gifter.prototype.isGiftee = function (GifteeObj) {
-		return GifteeObj.hasOwnProperty("isGiftee");				
+		var obj = GifteeObj[Object.keys(GifteeObj)[0]];
+		//console.log(obj);		
+		return obj.hasOwnProperty("isGiftee");				
 	};
 
 	var gifter = new Gifter([
