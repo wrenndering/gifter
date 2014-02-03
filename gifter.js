@@ -1,8 +1,13 @@
+	var fs = require("fs");
 	var Gifter = function ( gifterCollection ) {
 		this.gifterCollection = gifterCollection;
 		this.IdxMap = this.createGifterIdxMap();
 		this.bindPossibleGifteeIdxs();
+		this.noAvailGiftee = [];
 		this.startGifter();
+		console.log(this.noAvailGiftee);
+		console.log("\n\n");
+		console.log(this.gifterCollection);
 //		console.log(JSON.stringify(this.gifterCollection));
 		
 	};
@@ -46,6 +51,7 @@
 			randomNumIdx = this.getRandomUniqNum(0, l-1, usedArr);
 			randomGifter = this.gifterCollection[randomNumIdx];
 			usedArr.push(randomNumIdx);
+			//console.log(randomGifter);
 			this.assignGiftee(randomGifter);
 		}
 	};
@@ -60,37 +66,64 @@
 	};
 
 	Gifter.prototype.assignGiftee = function (GifterObj) {
-		var randomGiftee;
-			GifterObj = GifterObj[Object.keys(GifterObj)[0]];
-			//console.log(GifterObj);
-			randomGiftee = this.getRandomUniqGiftee(GifterObj.possibilities);
-			GifterObj["giftee"] = Object.keys(randomGiftee)[0];
-			console.log(GifterObj);
+		var randomGiftee,
+			GifterName = Object.keys(GifterObj)[0];
+			GifterObj = GifterObj[GifterName];
+			//console.log(GifterName);
+			randomGiftee = this.getRandomUniqGiftee(GifterObj.possibilities, GifterName);
+			if (!randomGiftee) {
+				this.AddToNoAvailBucket(GifterName);
+			} else {
+				//console.log(randomGiftee);
+			}
+			//GifterObj["giftee"] = Object.keys(randomGiftee)[0];
+			//console.log(randomGiftee);
 	};
 
-	Gifter.prototype.getRandomUniqGiftee = function (posArr) {
+//############# Problem area????? ###########################################
+
+	Gifter.prototype.getRandomUniqGiftee = function (posArr, GifterName) {
 		var l = posArr.length,
 			randomGifteeIdx,
 			randomGiftee,
+			posArrCopy;
+			posArr = [].concat(posArr);
 			posArrCopy = posArr;
-
+		//console.log(posArr);
 		if (l < 1) {
+			//console.log("hello");
 			return false;
 		}
 
 		randomGifteeIdx = posArr[this.getRandomInt(0, l-1)];
 		randomGiftee = this.gifterCollection[this.IdxMap[randomGifteeIdx]];
+		randomGiftee = randomGiftee[Object.keys(randomGiftee)[0]];
 		//console.log(randomGiftee);
-		if (this.isGiftee(randomGiftee)) {
-			this.getRandomUniqGiftee(posArrCopy.splice(randomGifteeIdx, 1));
-			console.log("im a giftee");			
+		if (this.GifteeIsAvail(randomGiftee)) {
+			this.tagGiftee(randomGiftee, GifterName);	
+			//this.getRandomUniqGiftee(posArrCopy.splice(randomGifteeIdx, 1));
+			//console.log("im a giftee");		
+			return randomGiftee;	
+		} else {
+			posArrCopy.splice(randomGifteeIdx, 1)
+			this.getRandomUniqGiftee(posArrCopy, GifterName);
+			//console.log(randomGiftee);
 		}
-		return randomGiftee;		
- 			
+		return false;
+		//console.log("hello bottom");
 	};
 
-	Gifter.prototype.tagGiftee = function () {
-			
+	Gifter.prototype.GifteeIsAvail = function (randomGiftee) {
+		return !(
+			this.isGiftee(randomGiftee)	
+		)
+	};
+
+	Gifter.prototype.tagGiftee = function (GifteeObj, GifterName) {
+		GifteeObj.isGiftee = true;
+		GifteeObj.Gifter = GifterName;
+		//console.log(GifteeObj);
+		//console.log(this.gifterCollection[i]);
 	};
 
 	Gifter.prototype.tagGifter = function () {
@@ -98,69 +131,14 @@
 	};
 
 	Gifter.prototype.isGiftee = function (GifteeObj) {
-		var obj = GifteeObj[Object.keys(GifteeObj)[0]];
 		//console.log(obj);		
-		return obj.hasOwnProperty("isGiftee");				
+		return GifteeObj.hasOwnProperty("isGiftee");				
 	};
 
-	var gifter = new Gifter([
-		{ 
-			"Meg" : {
-				"email" : "Meg@email.com",
-				"exception" : "Josh"
-			}
-		},
-		{
-			"Josh" : {
-				"email" : "Josh@email.com",
-				"exception" : "Meg"
-			}
-		},
-		{
-			"Roy" : {
-				"email" : "Roy@email.com",
-				"exception" : "Jean"
-			}
-		},
-		{
-			"Jean" : {
-				"email" : "Jean@email.com",
- 			    "exception" : "Roy"
-			}
-		},
-		{
-			"Chris" : {
-				"email" : "Chris@email.com",
-				"exception" : [ "Elizabeth", "Meredith" ]
-			}
-		},
-		{
-			"Elizabeth" : {
-				"email" : "Elizabeth@email.com",
-				"exception" : [ "Chris", "Meredith" ]
-			}
-		},
-		{
-			"Meredith" : {
-				"email" : "Meredith@email.com",
-				"exception" : [ "Elizabeth", "Chris" ]
-			}
-		},
-		{
-			"Mike" : {
-				"email" : "Mike@email.com",
-				"exception" : "Courtney"
-			}
-		},
-		{
-			"Courtney" : {
-				"email" : "Courtney@email.com",
-				"exception" : "Mike"
-			}
-		}
-	]);
-	
-		
+	Gifter.prototype.AddToNoAvailBucket = function (GifterName) {
+		this.noAvailGiftee.push(GifterName);		
+	};
 
-
-
+	var gifter = new Gifter(
+		JSON.parse(fs.readFileSync("./data.json"))	
+	);
