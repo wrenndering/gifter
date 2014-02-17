@@ -80,12 +80,13 @@
 			//console.log(randomGiftee);
 	};
 
-//############# Problem area????? ###########################################
+// Problem function
 
 	Gifter.prototype.getRandomUniqGiftee = function (posArr, GifterName) {
 		var l = posArr.length,
 			randomGifteeIdx,
 			randomGiftee,
+			randomGifteeName,
 			posArrCopy;
 			posArr = [].concat(posArr);
 			posArrCopy = posArr;
@@ -97,10 +98,12 @@
 
 		randomGifteeIdx = posArr[this.getRandomInt(0, l-1)];
 		randomGiftee = this.gifterCollection[this.IdxMap[randomGifteeIdx]];
-		randomGiftee = randomGiftee[Object.keys(randomGiftee)[0]];
+		randomGifteeName = Object.keys(randomGiftee)[0]; 
+		randomGiftee = randomGiftee[randomGifteeName];
 		//console.log(randomGiftee);
 		if (this.GifteeIsAvail(randomGiftee)) {
 			this.tagGiftee(randomGiftee, GifterName);	
+			this.tagGifter(randomGifteeName, GifterName);
 			//this.getRandomUniqGiftee(posArrCopy.splice(randomGifteeIdx, 1));
 			//console.log("im a giftee");		
 			return randomGiftee;	
@@ -120,14 +123,13 @@
 	};
 
 	Gifter.prototype.tagGiftee = function (GifteeObj, GifterName) {
-		GifteeObj.isGiftee = true;
 		GifteeObj.Gifter = GifterName;
-		//console.log(GifteeObj);
-		//console.log(this.gifterCollection[i]);
 	};
 
-	Gifter.prototype.tagGifter = function () {
-			
+	Gifter.prototype.tagGifter = function (GifteeName, GifterName) { 
+		var gifterObj = this.gifterCollection[this.IdxMap[GifterName]],
+			gifterObj = gifterObj[Object.keys(gifterObj)[0]];
+			gifterObj.Giftee = GifteeName;
 	};
 
 	Gifter.prototype.isGiftee = function (GifteeObj) {
