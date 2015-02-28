@@ -1,4 +1,4 @@
 gifter
 ======
 
-## Like pulling name out of a hat!
+Like pulling names out of a hat!
