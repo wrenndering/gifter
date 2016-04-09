@@ -1,56 +1,20 @@
 [
-		{ 
-			"Meg" : {
-				"email" : "Meg@email.com",
-				"exception" : "Josh"
-			}
-		},
-		{
-			"Josh" : {
-				"email" : "Josh@email.com",
-				"exception" : "Meg"
-			}
-		},
-		{
-			"Roy" : {
-				"email" : "Roy@email.com",
-				"exception" : "Jean"
-			}
-		},
-		{
-			"Jean" : {
-				"email" : "Jean@email.com",
- 			    "exception" : "Roy"
-			}
-		},
-		{
-			"Chris" : {
-				"email" : "Chris@email.com",
-				"exception" : [ "Elizabeth", "Meredith" ]
-			}
-		},
-		{
-			"Elizabeth" : {
-				"email" : "Elizabeth@email.com",
-				"exception" : [ "Chris", "Meredith" ]
-			}
-		},
-		{
-			"Meredith" : {
-				"email" : "Meredith@email.com",
-				"exception" : [ "Elizabeth", "Chris" ]
-			}
-		},
-		{
-			"Mike" : {
-				"email" : "Mike@email.com",
-				"exception" : "Courtney"
-			}
-		},
-		{
-			"Courtney" : {
-				"email" : "Courtney@email.com",
-				"exception" : "Mike"
-			}
-		}
-	]
+  {
+    "foo": {
+      "email": "foo@email.com",
+      "exception": "foo"
+    }
+  },
+  {
+    "bar": {
+      "email": "bar@email.com",
+      "exception": "bar"
+    }
+  },
+  {
+    "baz": {
+      "email": "baz@email.com",
+      "exception": ["foo", "bar"] 
+    }
+  }
+]
