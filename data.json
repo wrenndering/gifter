@@ -16,5 +16,12 @@
       "email": "baz@email.com",
       "exception": ["foo", "bar"] 
     }
+  },
+  {
+    "boo": {
+      "email": "boo@email.com",
+      "exception": ["foo", "bar"] 
+    }
   }
+
 ]
